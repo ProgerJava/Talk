@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="backGroundMain">#5C198A98</color>
+    <color name="nameAppColor">#415258</color>
+    <color name="colorButtonNext">#FFFEDC00</color>
+    <color name="colorStart">#40BCFE</color>
+    <color name="colorCenter">#00BCD4</color>
+    <color name="colorEnd">#A9DBF4</color>
+    <color name="colorButtonStroke">#D3D5C145</color>
+    <color name="colorBorderStroke">#415258</color>
+
+</resources>

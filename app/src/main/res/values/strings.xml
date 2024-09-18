@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">Talk</string>
+    <string name="yourName">Enter your name</string>
+    <string name="yourPhone">Enter your phone</string>
+    <string name="yourCode">Enter your code</string>
+    <string name="testPhone">+ 7 (***) *** 69–49</string>
+    <string name="yourCountryCode">+7</string>
+    <string name="next">Next</string>
+    <string name="getCode">Get code</string>
+    <string name="firstEnterYourName">First enter your name</string>
+    <string name="firstEnterYourPhone">First enter your phone</string>
+    <string name="firstAddYourPhoto">First add your photo</string>
+    <string name="firstEnterYourCode">First enter your code</string>
+    <string name="incorrectCode">Incorrect Code</string>
+    <string name="tagPhoto">Empty photo</string>
+    <string name="statusUserRegistrationTrue">True</string>
+    <string name="statusUserConfirmationTrue">True</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+</resources>

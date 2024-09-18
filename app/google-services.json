@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "889471976710",
+    "project_id": "talk-2ca7f",
+    "storage_bucket": "talk-2ca7f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:889471976710:android:5aa126b089242c022c8a87",
+        "android_client_info": {
+          "package_name": "com.appAllFriendsNearby.talk"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAW0XNZdsIlBwjBJS_3PLPhNqJA1y6glO8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
