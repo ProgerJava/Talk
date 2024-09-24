@@ -2,11 +2,13 @@ package com.appAllFriendsNearby.talk.model
 
 import android.content.Intent
 import android.content.SharedPreferences
+import android.provider.Settings.Global.getString
 import android.util.Log
 import com.appAllFriendsNearby.talk.R
 import com.appAllFriendsNearby.talk.dataBase.USER_CONFIRMATION
 import com.appAllFriendsNearby.talk.dataBase.USER_ID
 import com.appAllFriendsNearby.talk.dataBase.USER_PHONE
+import com.appAllFriendsNearby.talk.dataBase.USER_REGISTRATION
 import com.appAllFriendsNearby.talk.dataBase.auth
 import com.appAllFriendsNearby.talk.dataBase.checkExistsUserData
 import com.appAllFriendsNearby.talk.dataBase.currentUser
@@ -25,8 +27,9 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
-class RegistrationModel (private val registrationActivity: RegistrationActivity, private val sharedPreferencesEditor: SharedPreferences.Editor) {
+class RegistrationModel @Inject constructor() {
 
     ///////////////////////////VerificationId
     private lateinit var storedVerificationId: String
@@ -34,6 +37,8 @@ class RegistrationModel (private val registrationActivity: RegistrationActivity,
     private lateinit var resendToken: PhoneAuthProvider.ForceResendingToken
     //////////////////////////callBack. If 0 -> Failure, 1 -> Success. Code send
     var callBackSendMessage : Int? = null
+    lateinit var registrationActivity: RegistrationActivity
+    lateinit var sharedPreferencesEditor: SharedPreferences.Editor
 
 
     fun setPhoneNumber(phoneNumber: String) {
@@ -83,7 +88,7 @@ class RegistrationModel (private val registrationActivity: RegistrationActivity,
                     sharedPreferencesEditor.putString(USER_PHONE, "+7${personPhone}".replace(" ", "")).commit()
                     ////////////////////Проверяем, была ли уже регистрация у пользователя
                     CoroutineScope(Dispatchers.Main).launch {
-                        if (!checkExistsUser()) {
+                        if (!async { checkExistsUserData() }.await()) {
                             /////////////////////Переходим в активити добавления персональных данных
                             registrationActivity.changeFragment(USER_DATA_FRAGMENT_REPLACE)
                             ////////////////////Сохраняем информацию о том, что пользователь подтвердил телефон
@@ -91,6 +96,8 @@ class RegistrationModel (private val registrationActivity: RegistrationActivity,
                         } else {
                             /////////////////////Переходим в активити главного меню
                             registrationActivity.startActivity(Intent(registrationActivity, MainMenuActivity::class.java))
+                            //////////////////////////Сохраняем состояние активити - MainMenu
+                            sharedPreferencesEditor.putString(USER_REGISTRATION, registrationActivity.getString(R.string.statusUserRegistrationTrue)).commit()
                         }
                     }
                 } else {
@@ -101,9 +108,5 @@ class RegistrationModel (private val registrationActivity: RegistrationActivity,
                 }
             }
 
-    }
-
-    private suspend fun checkExistsUser() = coroutineScope {
-        return@coroutineScope async { checkExistsUserData() }.await()
     }
 }

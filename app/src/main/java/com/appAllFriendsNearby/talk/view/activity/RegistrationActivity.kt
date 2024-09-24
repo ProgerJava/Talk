@@ -31,6 +31,7 @@ class RegistrationActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityRegistrationBinding
     private lateinit var fragmentTransaction: FragmentTransaction
+
     @Inject
     lateinit var sharedPreferences: SharedPreferences
     @Inject

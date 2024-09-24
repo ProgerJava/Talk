@@ -4,6 +4,8 @@ package com.appAllFriendsNearby.talk.tools.constants
 const val REGISTRATION_FRAGMENT = "REGISTRATION_FRAGMENT"
 const val USER_DATA_FRAGMENT = "USER_DATA_FRAGMENT"
 const val USER_DATA_FRAGMENT_REPLACE = "USER_DATA_REPLACE"
+const val MAIN_MENU_FRAGMENT = "MAIN_MENU_FRAGMENT"
+
 
 
 /////////////////SharedPreferences

@@ -3,6 +3,7 @@ package com.appAllFriendsNearby.talk.dataBase
 import android.content.SharedPreferences
 import android.util.Log
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
 
 ///////////////////Записываем данные на нового пользователя в БД
 suspend fun writeNewUserToDB(sharedPreferences: SharedPreferences) = coroutineScope {
@@ -26,15 +27,16 @@ suspend fun writeNewUserToDB(sharedPreferences: SharedPreferences) = coroutineSc
         }
 }
 //////////////////////////Проверяем, есть ли пользователь в БД
-suspend fun checkExistsUserData() = coroutineScope  {
-    var flag = false
+suspend fun checkExistsUserData() : Boolean = coroutineScope  {
+    var flag: Boolean? = null
     currentUser?.let {
         database.child(USERS).child(USER_ID).child(it.uid).child(USER_DATA).child(USER_NAME)
             .get().addOnSuccessListener { result -> ///////Если нет имени
-                if (result.value == null) {
-                    flag = true
-                }
+                flag = result.value != null
             }
     }
-    return@coroutineScope flag
+    while (flag == null) {
+        delay(100)
+    }
+    return@coroutineScope flag!!
 }

@@ -1,32 +1,36 @@
 package com.appAllFriendsNearby.talk.view.fragment
 
-import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.ViewModelProvider
 import com.appAllFriendsNearby.talk.R
 import com.appAllFriendsNearby.talk.databinding.FragmentRegistrationBinding
+import com.appAllFriendsNearby.talk.di.MyApplication
 import com.appAllFriendsNearby.talk.model.RegistrationModel
-import com.appAllFriendsNearby.talk.tools.constants.MAIN
 import com.appAllFriendsNearby.talk.tools.generalStaticFunction.showToast
 import com.appAllFriendsNearby.talk.view.activity.RegistrationActivity
 import com.appAllFriendsNearby.talk.viewModel.RegistrationViewModel
-import com.appAllFriendsNearby.talk.viewModel.RegistrationViewModelFabric
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 class RegistrationFragment : Fragment() {
 
     private lateinit var binding: FragmentRegistrationBinding
-    private lateinit var viewModel: RegistrationViewModel
-    private lateinit var registrationModel: RegistrationModel
     private lateinit var registrationActivity: RegistrationActivity
-    private lateinit var sharedPreferences: SharedPreferences
+
+    @Inject
+    lateinit var viewModel: RegistrationViewModel
+    @Inject
+    lateinit var registrationModel: RegistrationModel
+    @Inject
+    lateinit var sharedPreferences: SharedPreferences
+    @Inject
+    lateinit var sharedPreferencesEditor: SharedPreferences.Editor
 
 
     override fun onCreateView(
@@ -36,14 +40,14 @@ class RegistrationFragment : Fragment() {
         // Inflate the layout for this fragment
         binding = FragmentRegistrationBinding.inflate(inflater, container, false)
         registrationActivity = activity as RegistrationActivity
-        sharedPreferences = registrationActivity.getSharedPreferences(MAIN, MODE_PRIVATE)
-        /////////////////ViewModel
-        registrationModel = RegistrationModel(registrationActivity, sharedPreferences.edit())
-        viewModel = ViewModelProvider (this, RegistrationViewModelFabric(registrationModel, registrationActivity.application))[RegistrationViewModel::class.java]
+
+        (requireActivity().application as MyApplication).appComponent.inject(this)
 
         /////////////////////Слушатель отправки кода на телефон пользователя
         viewModel.sendMessageFlag.observe(registrationActivity) {
             if (it) {
+                binding.progressBar.visibility = View.GONE
+                binding.personPhone.isEnabled = false
                 binding.personCode.visibility = View.VISIBLE /////////////код отправлен, подключаем поле "код" для ввода, меняем название кнопки
                 binding.buttonNext.text = registrationActivity.getString(R.string.next)
             }
@@ -72,8 +76,9 @@ class RegistrationFragment : Fragment() {
         if (binding.personPhone.text.length != 10) {
             showToast(registrationActivity, R.string.firstEnterYourPhone)
         } else {
+            binding.progressBar.visibility = View.VISIBLE
             CoroutineScope(Dispatchers.Main).launch {
-                viewModel.setPhoneNumber("+7${binding.personPhone.text.trim()}")
+                viewModel.setPhoneNumber("+7${binding.personPhone.text.trim()}", registrationActivity, sharedPreferencesEditor)
             }
         }
     }

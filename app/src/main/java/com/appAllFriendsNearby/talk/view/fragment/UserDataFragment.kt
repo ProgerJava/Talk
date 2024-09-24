@@ -1,6 +1,5 @@
 package com.appAllFriendsNearby.talk.view.fragment
 
-import android.content.Context.MODE_PRIVATE
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -12,14 +11,15 @@ import android.view.ViewGroup
 import androidx.core.net.toUri
 import com.appAllFriendsNearby.talk.R
 import com.appAllFriendsNearby.talk.dataBase.USER_NAME
+import com.appAllFriendsNearby.talk.dataBase.USER_PHONE
 import com.appAllFriendsNearby.talk.dataBase.USER_PHOTO
 import com.appAllFriendsNearby.talk.dataBase.USER_REGISTRATION
 import com.appAllFriendsNearby.talk.dataBase.addToStorageUserProfilePhoto
 import com.appAllFriendsNearby.talk.dataBase.writeNewUserToDB
 import com.appAllFriendsNearby.talk.databinding.FragmentUserDataBinding
+import com.appAllFriendsNearby.talk.di.MyApplication
 import com.appAllFriendsNearby.talk.tools.constants.CODE_PICK_IMAGE
 import com.appAllFriendsNearby.talk.tools.constants.CROPPED_URI
-import com.appAllFriendsNearby.talk.tools.constants.MAIN
 import com.appAllFriendsNearby.talk.tools.generalStaticFunction.showToast
 import com.appAllFriendsNearby.talk.view.activity.MainMenuActivity
 import com.appAllFriendsNearby.talk.view.activity.RegistrationActivity
@@ -27,13 +27,15 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 
 class UserDataFragment : Fragment() {
 
     private lateinit var binding: FragmentUserDataBinding
     private lateinit var registrationActivity: RegistrationActivity
-    private lateinit var sharedPreferences: SharedPreferences
+    @Inject
+    lateinit var sharedPreferences: SharedPreferences
     private var croppedUri = ""
 
     override fun onCreateView(
@@ -43,11 +45,12 @@ class UserDataFragment : Fragment() {
         // Inflate the layout for this fragment
         binding = FragmentUserDataBinding.inflate(inflater, container, false)
         registrationActivity = activity as RegistrationActivity
-        sharedPreferences = registrationActivity.getSharedPreferences(MAIN, MODE_PRIVATE)
+        (requireActivity().application as MyApplication).appComponent.inject(this)
         ////////////////////Если есть информация о пользовательском фото
         if (sharedPreferences.getString(CROPPED_URI, "").toString().isNotEmpty()) {
             setPhoto()
         }
+        binding.userPhone.hint = sharedPreferences.getString(USER_PHONE, "")
 
         binding.insertPhoto.setOnClickListener {
             ///////////////////////Обрезка фото

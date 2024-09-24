@@ -12,18 +12,18 @@
         android:layout_width="150dp"
         android:layout_height="150dp"
         android:layout_marginTop="150dp"
-        app:cardCornerRadius="15dp"
+        app:cardCornerRadius="25dp"
         app:cardElevation="10dp"
+        app:strokeColor="@android:color/transparent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:strokeColor="@color/black">
+        app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:background="@drawable/button_style_edit">
+            android:background="@drawable/insert_photo_style"
+            android:layout_gravity="center">
 
             <ImageView
                 android:id="@+id/insertPhoto"
@@ -60,14 +60,14 @@
         app:layout_constraintTop_toBottomOf="@+id/cardView" />
 
     <EditText
-        android:id="@+id/editText"
+        android:id="@+id/userPhone"
         android:layout_width="300dp"
         android:layout_height="45dp"
         android:layout_marginStart="30dp"
         android:layout_marginTop="30dp"
         android:layout_marginEnd="30dp"
         android:background="@drawable/button_style_edit"
-        android:focusable="false"
+        android:enabled="false"
         android:fontFamily="sans-serif"
         android:gravity="center"
         android:hint="@string/testPhone"
