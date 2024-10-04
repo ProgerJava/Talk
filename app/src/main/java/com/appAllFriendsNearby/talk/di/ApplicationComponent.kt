@@ -3,6 +3,7 @@ package com.appAllFriendsNearby.talk.di
 
 import android.content.Context
 import com.appAllFriendsNearby.talk.view.activity.RegistrationActivity
+import com.appAllFriendsNearby.talk.view.fragment.DialogFragment
 import com.appAllFriendsNearby.talk.view.fragment.MainMenuFragment
 import com.appAllFriendsNearby.talk.view.fragment.RegistrationFragment
 import com.appAllFriendsNearby.talk.view.fragment.UserDataFragment
@@ -26,6 +27,7 @@ interface ApplicationComponent {
     fun inject (registrationFragment: RegistrationFragment)
     fun inject (userDataFragment: UserDataFragment)
     fun inject (mainMenuFragment: MainMenuFragment)
+    fun inject (dialogFragment: DialogFragment)
 
 }
 @Module (includes = [RegistrationModule::class])

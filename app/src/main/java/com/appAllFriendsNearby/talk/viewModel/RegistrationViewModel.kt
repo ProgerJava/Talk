@@ -19,9 +19,8 @@ class RegistrationViewModel @Inject constructor(private val registrationModel: R
     val sendMessageFlag: MutableLiveData<Boolean> = MutableLiveData<Boolean>()
 
 
-    suspend fun setPhoneNumber(number: String, registrationActivity: RegistrationActivity, sharedPreferencesEditor: SharedPreferences.Editor) = coroutineScope {
+    suspend fun setPhoneNumber(number: String, registrationActivity: RegistrationActivity) = coroutineScope {
         registrationModel.registrationActivity = registrationActivity
-        registrationModel.sharedPreferencesEditor = sharedPreferencesEditor
         async {registrationModel.setPhoneNumber(number)}.await()
         while (registrationModel.callBackSendMessage == null) {
             delay(100)

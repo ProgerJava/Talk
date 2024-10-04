@@ -2,15 +2,18 @@ package com.appAllFriendsNearby.talk.model
 
 import android.content.Intent
 import android.content.SharedPreferences
-import android.provider.Settings.Global.getString
 import android.util.Log
 import com.appAllFriendsNearby.talk.R
+import com.appAllFriendsNearby.talk.dataBase.USERS
 import com.appAllFriendsNearby.talk.dataBase.USER_CONFIRMATION
+import com.appAllFriendsNearby.talk.dataBase.USER_DATA
 import com.appAllFriendsNearby.talk.dataBase.USER_ID
+import com.appAllFriendsNearby.talk.dataBase.USER_NAME
 import com.appAllFriendsNearby.talk.dataBase.USER_PHONE
 import com.appAllFriendsNearby.talk.dataBase.USER_REGISTRATION
 import com.appAllFriendsNearby.talk.dataBase.auth
-import com.appAllFriendsNearby.talk.dataBase.checkExistsUserData
+import com.appAllFriendsNearby.talk.dataBase.DATABASE_O
+import com.appAllFriendsNearby.talk.dataBase.USER_ID_O
 import com.appAllFriendsNearby.talk.dataBase.currentUser
 import com.appAllFriendsNearby.talk.tools.constants.USER_DATA_FRAGMENT_REPLACE
 import com.appAllFriendsNearby.talk.tools.generalStaticFunction.showToast
@@ -25,11 +28,12 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-class RegistrationModel @Inject constructor() {
+class RegistrationModel @Inject constructor(private val sharedPreferencesEditor: SharedPreferences.Editor) {
 
     ///////////////////////////VerificationId
     private lateinit var storedVerificationId: String
@@ -38,7 +42,7 @@ class RegistrationModel @Inject constructor() {
     //////////////////////////callBack. If 0 -> Failure, 1 -> Success. Code send
     var callBackSendMessage : Int? = null
     lateinit var registrationActivity: RegistrationActivity
-    lateinit var sharedPreferencesEditor: SharedPreferences.Editor
+
 
 
     fun setPhoneNumber(phoneNumber: String) {
@@ -83,8 +87,9 @@ class RegistrationModel @Inject constructor() {
             .addOnCompleteListener(registrationActivity) {
                 if (it.isSuccessful) {
                     currentUser = it.result.user
+                    USER_ID_O = currentUser!!.uid
                     ///////////////////Сохраняем данные пользователя во внутренню память устройства
-                    sharedPreferencesEditor.putString(USER_ID, currentUser?.uid).commit()
+                    sharedPreferencesEditor.putString(USER_ID, USER_ID_O).commit()
                     sharedPreferencesEditor.putString(USER_PHONE, "+7${personPhone}".replace(" ", "")).commit()
                     ////////////////////Проверяем, была ли уже регистрация у пользователя
                     CoroutineScope(Dispatchers.Main).launch {
@@ -98,6 +103,7 @@ class RegistrationModel @Inject constructor() {
                             registrationActivity.startActivity(Intent(registrationActivity, MainMenuActivity::class.java))
                             //////////////////////////Сохраняем состояние активити - MainMenu
                             sharedPreferencesEditor.putString(USER_REGISTRATION, registrationActivity.getString(R.string.statusUserRegistrationTrue)).commit()
+                            registrationActivity.finish()
                         }
                     }
                 } else {
@@ -109,4 +115,17 @@ class RegistrationModel @Inject constructor() {
             }
 
     }
+    //////////////////////////Проверяем, есть ли пользователь в БД
+    private suspend fun checkExistsUserData() : Boolean = coroutineScope  {
+        var flag: Boolean? = null
+        DATABASE_O.child(USERS).child(USER_ID).child(USER_ID_O).child(USER_DATA).child(USER_NAME)
+            .get().addOnSuccessListener { result -> ///////Если нет имени
+                flag = result.value != null
+            }
+        while (flag == null) {
+            delay(100)
+        }
+        return@coroutineScope flag!!
+    }
+
 }

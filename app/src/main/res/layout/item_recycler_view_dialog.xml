@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/constraint"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginTop="3dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/dateMessageCompanion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="13sp"
+        android:textColor="@color/black"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="10dp"
+        android:gravity="center"
+        android:text="@string/date"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/messageCompanion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:textColor="@color/black"
+        android:layout_marginTop="1dp"
+        android:gravity="start|center_vertical"
+        android:maxWidth="300dp"
+        android:background="@drawable/style_message_recycler_dialog"
+        android:padding="10dp"
+        android:text="@string/testMessage"
+        app:layout_constraintStart_toStartOf="@+id/dateMessageCompanion"
+        app:layout_constraintTop_toBottomOf="@+id/dateMessageCompanion" />
+
+    <TextView
+        android:id="@+id/dateMessageCurrentUser"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:gravity="center"
+        android:text="@string/date"
+        android:textColor="@color/black"
+        android:textSize="13sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/messageCurrentUser"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        android:gravity="start|center_vertical"
+        android:background="@drawable/style_message_recycler_dialog"
+        android:padding="10dp"
+        android:maxWidth="300dp"
+        android:text="Привет, как тебе вчерашний фильм, что думаешь?"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="@+id/dateMessageCurrentUser"
+        app:layout_constraintTop_toBottomOf="@+id/dateMessageCurrentUser" />
+
+    <ImageView
+        android:id="@+id/selectCurrentUser"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/messageCurrentUser"
+        android:layout_marginEnd="10dp"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toStartOf="@+id/messageCurrentUser"
+        app:layout_constraintTop_toTopOf="@+id/messageCurrentUser"
+        app:srcCompat="@drawable/drawable_icon_choose_element" />
+
+    <ImageView
+        android:id="@+id/selectCompanion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        android:layout_marginStart="10dp"
+        app:layout_constraintBottom_toBottomOf="@+id/messageCompanion"
+        app:layout_constraintStart_toEndOf="@+id/messageCompanion"
+        app:layout_constraintTop_toTopOf="@+id/messageCompanion"
+        app:srcCompat="@drawable/drawable_icon_choose_element" />
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,40 +4,39 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
+import androidx.activity.OnBackPressedCallback
 import androidx.annotation.RequiresApi
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.appAllFriendsNearby.talk.R
-import com.appAllFriendsNearby.talk.dataBase.USER_PHOTO
-import com.appAllFriendsNearby.talk.dataBase.getStorageUserProfilePhoto
+import androidx.fragment.app.Fragment
+import com.appAllFriendsNearby.talk.dataBase.setUserConnection
 import com.appAllFriendsNearby.talk.databinding.FragmentMainMenuBinding
 import com.appAllFriendsNearby.talk.di.MyApplication
-import com.appAllFriendsNearby.talk.tools.generalStaticFunction.showToast
+import com.appAllFriendsNearby.talk.tools.constants.COMPANION_ID
+import com.appAllFriendsNearby.talk.tools.constants.DIALOG_FRAGMENT
+import com.appAllFriendsNearby.talk.tools.generalStaticFunction.setUserPhoto
+import com.appAllFriendsNearby.talk.view.OnClickRecyclerViewItemUsersOrDialogs
+import com.appAllFriendsNearby.talk.view.activity.MainMenuActivity
 import com.appAllFriendsNearby.talk.view.activity.RegistrationActivity
+import com.appAllFriendsNearby.talk.view.recyclerView.RecyclerViewAllUserDialogs
 import com.appAllFriendsNearby.talk.view.recyclerView.RecyclerViewListAllUsers
 import com.appAllFriendsNearby.talk.viewModel.MainMenuViewModel
-import com.squareup.picasso.Callback
-import com.squareup.picasso.Picasso
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class MainMenuFragment : Fragment() {
+class MainMenuFragment : Fragment(), OnClickRecyclerViewItemUsersOrDialogs {
 
     private lateinit var binding: FragmentMainMenuBinding
     @Inject
     lateinit var mainMenuViewModel: MainMenuViewModel
     @Inject
     lateinit var sharedPreferencesEditor: SharedPreferences.Editor
+    private lateinit var mainMenuActivity: MainMenuActivity
+
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
@@ -46,28 +45,40 @@ class MainMenuFragment : Fragment() {
     ): View {
         // Inflate the layout for this fragment
         binding = FragmentMainMenuBinding.inflate(inflater, container, false)
+        onBackPressed()
         (requireActivity().application as MyApplication).appComponent.inject(this)
-        binding.recyclerView.layoutManager = LinearLayoutManager (requireContext(), RecyclerView.HORIZONTAL, false)
-        /////////////////Получаем список пользователей
-        mainMenuViewModel.getAllUsers()
+        mainMenuActivity = (requireActivity() as MainMenuActivity)
         /////////////////Данные по текущему пользователю
         mainMenuViewModel.getCurrentUserData()
+        /////////////////Получаем список пользователей
+        mainMenuViewModel.getAllUsers()
+        //////////////////Получаем все диалоги пользователя
+        mainMenuViewModel.getAllUserDialogs()
+
 
         /////////////////Слушатель все пользователи
         mainMenuViewModel.listAllUsers.observe(requireActivity()) {
-            binding.recyclerView.adapter = RecyclerViewListAllUsers(it)
+            if (it.size != 0) {
+                binding.recyclerViewAllUsers.adapter = RecyclerViewListAllUsers(it, this)
+            }
         }
         /////////////////Слушатель текущий пользователь
         mainMenuViewModel.currentUser.observe(requireActivity()) {
             CoroutineScope(Dispatchers.Main).launch {
-                setUserPhoto(it.userPhoto)
+                setUserPhoto(it.userPhoto, binding.progressBar, binding.currentUserPhoto)
             }
         }
         /////////////////Слушатель поиска пользователей
         mainMenuViewModel.listSearchView.observe(requireActivity()) {
-            binding.recyclerView.adapter = RecyclerViewListAllUsers(it)
+            binding.recyclerViewAllUsers.adapter = RecyclerViewListAllUsers(it, this)
         }
-        binding.searcher.setOnQueryTextFocusChangeListener { v, hasFocus ->
+        ///////////////Слушатель все диалоги
+        mainMenuViewModel.userDialogs.observe(requireActivity()) {
+            if (it.size != 0) {
+                binding.allUserDialogs.adapter = RecyclerViewAllUserDialogs(it, this)
+            }
+        }
+        binding.searcher.setOnQueryTextFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
                 binding.cardView.visibility = View.GONE
             }else {
@@ -75,8 +86,10 @@ class MainMenuFragment : Fragment() {
             }
         }
 
+
         //////////////////////Функция поиска пользователей
-        binding.searcher.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
+        binding.searcher.setOnQueryTextListener(object: SearchView.OnQueryTextListener,
+            androidx.appcompat.widget.SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 query?.let {mainMenuViewModel.getUserByRequestSearchView(query.trim())}
                 return true
@@ -89,8 +102,6 @@ class MainMenuFragment : Fragment() {
 
         })
 
-
-
         /////////////////////Забываем пользователя на устройстве
         binding.buttonExit.setOnClickListener {
             removeUserDataLocalAddRegistrationFragment()
@@ -98,21 +109,29 @@ class MainMenuFragment : Fragment() {
 
         return binding.root
     }
+
     private fun removeUserDataLocalAddRegistrationFragment () {
         sharedPreferencesEditor.clear().commit()
         startActivity(Intent(requireActivity(), RegistrationActivity::class.java))
+        CoroutineScope(Dispatchers.Main).launch {
+            setUserConnection(false)
+        }
+        requireActivity().finish()
     }
-    private suspend fun setUserPhoto(userPhoto: String) = coroutineScope {
-        Picasso.get().load(userPhoto).into(binding.currentUserPhoto, object : Callback {
-            override fun onSuccess() {
-                binding.progressBar.visibility = View.GONE
-                binding.currentUserPhoto.visibility = View.VISIBLE
-            }
-
-            override fun onError(e: Exception) {
-                showToast(requireContext(), R.string.pictureLoadFailure)
+    ///////////////////Функция выхода из приложения
+    private fun onBackPressed() {
+        requireActivity().onBackPressedDispatcher.addCallback(object : OnBackPressedCallback(true) {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            override fun handleOnBackPressed() {
+                requireActivity().finish()
             }
         })
     }
+
+    override fun itemClick(userIdCompanion: String) {
+        sharedPreferencesEditor.putString(COMPANION_ID, userIdCompanion).commit()
+        mainMenuActivity.changeFragment(DIALOG_FRAGMENT)
+    }
+
 
 }

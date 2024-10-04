@@ -10,7 +10,8 @@
     <color name="colorEnd">#A9DBF4</color>
     <color name="colorButtonStroke">#D3D5C145</color>
     <color name="colorBorderStroke">#415258</color>
-    <color name="backGroundDarkerMain">#9EF2FB</color>
-
-
+    <color name="backGroundDarkerMain">#ADF4FB</color>
+    <color name="connection">#4CAF50</color>
+    <color name="disconnection">#F6685E</color>
+    <color name="statePressedIcon">#40BCFE</color>
 </resources>

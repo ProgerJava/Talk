@@ -1,28 +1,33 @@
 package com.appAllFriendsNearby.talk.dataBase
 
-import android.content.SharedPreferences
+import android.net.Uri
 import android.util.Log
-import androidx.core.net.toUri
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 
 
-suspend fun addToStorageUserProfilePhoto (sharedPreferences: SharedPreferences) = coroutineScope {
-    val file = sharedPreferences.getString(USER_PHOTO, "").toString().toUri()
-    val reference = currentUser?.uid?.let {
-        storage
-            .child(USERS)
-            .child(it)
-            .child(USER_PHOTO)
+suspend fun addToStorageUserProfilePhoto (urlUserPhoto: Uri): String = coroutineScope {
+    var referenceUserPhoto = ""
+    val reference = STORAGE_O
+        .child(USERS)
+        .child(USER_ID_O)
+        .child(USER_PHOTO)
+    reference.putFile(urlUserPhoto).addOnSuccessListener {
+        reference.downloadUrl.addOnCompleteListener {downloadUrl ->
+            referenceUserPhoto = downloadUrl.result.toString()
+        }.addOnFailureListener {downloadUrl->
+            Log.println(Log.ERROR, "addToStorageUserProfilePhoto", downloadUrl.message.toString())
         }
-    reference?.putFile(file)?.addOnCompleteListener {
-        Log.println(Log.INFO, "addToStorageUserProfilePhoto", it.result.toString())
-    }?.addOnFailureListener {
-        Log.println(Log.ERROR, "addToStorageUserProfilePhoto", it.message.toString())
+    }.addOnFailureListener { result ->
+        Log.println(Log.ERROR, "addToStorageUserProfilePhoto", result.message.toString())
     }
+    while (referenceUserPhoto.isEmpty()) {
+        delay(100)
+    }
+    return@coroutineScope referenceUserPhoto
 }
 
-suspend fun getStorageUserProfilePhoto(userID: String) : String = coroutineScope {
+/*suspend fun getStorageUserProfilePhoto(userID: String) : String = coroutineScope {
     var result = ""
     storage.child(USERS).child(userID).child(USER_PHOTO)
         .downloadUrl
@@ -35,4 +40,4 @@ suspend fun getStorageUserProfilePhoto(userID: String) : String = coroutineScope
         delay(100)
     }
     return@coroutineScope result
-}
+}*/

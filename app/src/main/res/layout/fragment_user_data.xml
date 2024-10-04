@@ -22,7 +22,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/insert_photo_style"
+            android:background="@drawable/style_insert_photo"
             android:layout_gravity="center">
 
             <ImageView
@@ -35,7 +35,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/insert_photo" />
+                app:srcCompat="@drawable/drawable_icon_insert_photo" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
@@ -48,7 +48,7 @@
         android:layout_marginStart="30dp"
         android:layout_marginTop="50dp"
         android:layout_marginEnd="30dp"
-        android:background="@drawable/button_style_edit"
+        android:background="@drawable/style_button_edit"
         android:fontFamily="sans-serif"
         android:gravity="center"
         android:hint="@string/yourName"
@@ -66,7 +66,7 @@
         android:layout_marginStart="30dp"
         android:layout_marginTop="30dp"
         android:layout_marginEnd="30dp"
-        android:background="@drawable/button_style_edit"
+        android:background="@drawable/style_button_edit"
         android:enabled="false"
         android:fontFamily="sans-serif"
         android:gravity="center"
@@ -77,6 +77,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/personName" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:indeterminateTint="@color/colorCenter"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/buttonNext"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/userPhone" />
 
     <TextView
         android:id="@+id/buttonNext"

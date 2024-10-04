@@ -10,7 +10,9 @@ import android.provider.MediaStore
 import androidx.fragment.app.FragmentTransaction
 import com.appAllFriendsNearby.talk.R
 import com.appAllFriendsNearby.talk.dataBase.USER_CONFIRMATION
+import com.appAllFriendsNearby.talk.dataBase.USER_ID_O
 import com.appAllFriendsNearby.talk.dataBase.USER_REGISTRATION
+import com.appAllFriendsNearby.talk.dataBase.auth
 import com.appAllFriendsNearby.talk.databinding.ActivityRegistrationBinding
 import com.appAllFriendsNearby.talk.di.MyApplication
 import com.appAllFriendsNearby.talk.tools.constants.CODE_PICK_IMAGE
@@ -45,17 +47,21 @@ class RegistrationActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         (application as MyApplication).appComponent.inject(this)
+        if (auth.currentUser != null) {
+            USER_ID_O = auth.currentUser!!.uid
+        }
 
         //Проверяем, зарегестрирован ли пользователь
         if (sharedPreferences.getString(USER_REGISTRATION, "") == getString(R.string.statusUserRegistrationTrue)) {
             /////////////////////Переходим в активити главного меню
             startActivity(Intent(this, MainMenuActivity::class.java))
+            finish()
         }
         //Если пользователь не зарегестрирован, но подтвердил телефон
         else if (sharedPreferences.getString(USER_CONFIRMATION, "") == getString(R.string.statusUserConfirmationTrue)) {
             changeFragment(USER_DATA_FRAGMENT)
         }else {
-            //////////////////////Привязка и отрисовка интерфейса
+            //////////////////////Если впервые тут
             changeFragment(REGISTRATION_FRAGMENT)
         }
     }

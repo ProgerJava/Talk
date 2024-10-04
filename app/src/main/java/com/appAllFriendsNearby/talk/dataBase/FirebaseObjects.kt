@@ -4,13 +4,12 @@ import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import com.google.firebase.database.database
 import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.storage
 
 ////////////////////////////Объект аутентификации
 val auth by lazy {Firebase.auth}
-////////////////////////////Текущий пользователь
-var currentUser = auth.currentUser
 /////////////////////////////Объект базы данных
-val database by lazy {Firebase.database.reference}
+val DATABASE_O = Firebase.database.reference
 /////////////////////////////Объект хранилища
-val storage by lazy {FirebaseStorage.getInstance().reference}
+val STORAGE_O = FirebaseStorage.getInstance().reference
+var currentUser = auth.currentUser
+lateinit var USER_ID_O: String

@@ -1,11 +1,14 @@
 package com.appAllFriendsNearby.talk.view.fragment
 
 import android.content.SharedPreferences
+import android.os.Build
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
+import androidx.annotation.RequiresApi
+import androidx.fragment.app.Fragment
 import com.appAllFriendsNearby.talk.R
 import com.appAllFriendsNearby.talk.databinding.FragmentRegistrationBinding
 import com.appAllFriendsNearby.talk.di.MyApplication
@@ -22,7 +25,6 @@ class RegistrationFragment : Fragment() {
 
     private lateinit var binding: FragmentRegistrationBinding
     private lateinit var registrationActivity: RegistrationActivity
-
     @Inject
     lateinit var viewModel: RegistrationViewModel
     @Inject
@@ -40,6 +42,7 @@ class RegistrationFragment : Fragment() {
         // Inflate the layout for this fragment
         binding = FragmentRegistrationBinding.inflate(inflater, container, false)
         registrationActivity = activity as RegistrationActivity
+        onBackPressed()
 
         (requireActivity().application as MyApplication).appComponent.inject(this)
 
@@ -78,9 +81,18 @@ class RegistrationFragment : Fragment() {
         } else {
             binding.progressBar.visibility = View.VISIBLE
             CoroutineScope(Dispatchers.Main).launch {
-                viewModel.setPhoneNumber("+7${binding.personPhone.text.trim()}", registrationActivity, sharedPreferencesEditor)
+                viewModel.setPhoneNumber("+7${binding.personPhone.text.trim()}", registrationActivity)
             }
         }
+    }
+    ///////////////////Функция выхода из приложения
+    private fun onBackPressed() {
+        requireActivity().onBackPressedDispatcher.addCallback(object : OnBackPressedCallback(true) {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            override fun handleOnBackPressed() {
+                requireActivity().finish()
+            }
+        })
     }
 
 }
