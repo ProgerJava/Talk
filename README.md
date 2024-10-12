@@ -1,12 +1,12 @@
 <div>
-  <img src="https://github.com/user-attachments/assets/fc8f0b6b-b9fa-42a8-8f1a-bfa7a91e7d68" width="400" height="720"/>&nbsp;
-  <img src="https://github.com/user-attachments/assets/15a5e06f-cf30-4ec0-920d-5bbff26a27fe" width="400" height="720"/>&nbsp;
-  <img src="https://github.com/user-attachments/assets/9e461641-6739-4bbb-b11e-97de3dd98475" width="400" height="720"/>&nbsp;
+  <img src="https://github.com/user-attachments/assets/00b2fa71-e729-4ef4-ac4c-29eb37338199" width="400" height="720"/>&nbsp;
+  <img src="https://github.com/user-attachments/assets/6481ee1f-f8f9-43b7-aa94-d7c04d3713af" width="400" height="720"/>&nbsp;
+  <img src="https://github.com/user-attachments/assets/5ccf0fd2-5032-463d-8dd6-b384a2eac480" width="400" height="720"/>&nbsp;
 </div>
 
 
 ## :triangular_flag_on_post:About
-Chat application for communication between friends😛🙉 
+Chat for communication between people😛 
 ## :white_check_mark:Goals
 <ul>
 <li>practical use of the MVVM pattern</li>
