@@ -27,6 +27,7 @@ suspend fun addToStorageUserProfilePhoto (urlUserPhoto: Uri): String = coroutine
     return@coroutineScope referenceUserPhoto
 }
 
+
 /*suspend fun getStorageUserProfilePhoto(userID: String) : String = coroutineScope {
     var result = ""
     storage.child(USERS).child(userID).child(USER_PHOTO)

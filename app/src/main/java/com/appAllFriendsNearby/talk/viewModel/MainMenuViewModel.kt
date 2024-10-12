@@ -55,11 +55,7 @@ class MainMenuViewModel @Inject constructor (private val mainMenuModel: MainMenu
             scope.launch {
                 val mutableList = mutableListOf<CardUserDataClass>()
                 listAllUsers.value!!.forEach { cardUserDataClass ->
-                    if (cardUserDataClass.userName.contains(
-                            newText,
-                            ignoreCase = true
-                        ) || cardUserDataClass.userPhone.contains(newText, ignoreCase = true)
-                    ) {
+                    if (cardUserDataClass.userNick.contains(newText, ignoreCase = true)) {
                         mutableList.add(cardUserDataClass)
                     }
                 }
@@ -70,29 +66,35 @@ class MainMenuViewModel @Inject constructor (private val mainMenuModel: MainMenu
     ///////////////////Слушатель всех диалогов пользователя
     fun getAllUserDialogs() {
         val dialogs = mutableListOf<UserDialogsDataClass>()
-        var countDialogs = 0
         scope.launch {
             val postListener = object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     dialogs.clear()
-                    countDialogs = snapshot.childrenCount.toInt()
-                    (snapshot.value as HashMap<*, *>).forEach { (key, value) ->
-                        scope.launch {
-                            val result = value as HashMap<*, *>
-                            val lastMessage = result.entries.last().value as HashMap<*, *>
-                            val userData = async {mainMenuModel.getCurrentUserDataById(key as String)}.await()
-                            //////////////Добавляем id, сообщение последнее, остальное пока по умолчанию
-                            dialogs.add(
-                                UserDialogsDataClass(
-                                    key as String,
-                                    lastMessage[SENDER] as String,
-                                    userData.userName,
-                                    userData.userPhoto,
-                                    lastMessage[MESSAGE] as String,
-                                    userData.userConnection,
-                                    lastMessage[TIMESTAMP] as Long
+                    if (snapshot.childrenCount.toInt() != 0) {
+                        (snapshot.value as HashMap<*, *>).forEach { (userId, value) ->
+                            scope.launch {
+                                var lastMessage = HashMap<Any, Any>(0)
+                                (value as HashMap<*, *>).forEach { (_, value) ->
+                                    val result = value as HashMap<*, *>
+                                    if (lastMessage.size == 0 || result[TIMESTAMP] as Long > lastMessage[TIMESTAMP]as Long) {
+                                        lastMessage = value as HashMap<Any, Any>
+                                    }
+                                }
+                                val userData =
+                                    async { mainMenuModel.getCurrentUserDataById(userId as String) }.await()
+                                //////////////Добавляем id, сообщение последнее, остальное пока по умолчанию
+                                dialogs.add(
+                                    UserDialogsDataClass(
+                                        userId as String,
+                                        lastMessage[SENDER] as String,
+                                        userData.userName,
+                                        userData.userPhoto,
+                                        lastMessage[MESSAGE] as String,
+                                        userData.userConnection,
+                                        lastMessage[TIMESTAMP] as Long
+                                    )
                                 )
-                            )
+                            }
                         }
                     }
 

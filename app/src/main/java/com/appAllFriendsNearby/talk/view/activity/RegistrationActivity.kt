@@ -6,18 +6,16 @@ import android.content.SharedPreferences.Editor
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.provider.MediaStore
 import androidx.fragment.app.FragmentTransaction
 import com.appAllFriendsNearby.talk.R
-import com.appAllFriendsNearby.talk.dataBase.USER_CONFIRMATION
+import com.appAllFriendsNearby.talk.dataBase.LOG_IN
 import com.appAllFriendsNearby.talk.dataBase.USER_ID_O
-import com.appAllFriendsNearby.talk.dataBase.USER_REGISTRATION
+import com.appAllFriendsNearby.talk.dataBase.SIGN_IN
 import com.appAllFriendsNearby.talk.dataBase.auth
 import com.appAllFriendsNearby.talk.databinding.ActivityRegistrationBinding
 import com.appAllFriendsNearby.talk.di.MyApplication
 import com.appAllFriendsNearby.talk.tools.constants.CODE_PICK_IMAGE
 import com.appAllFriendsNearby.talk.tools.constants.CROPPED_URI
-import com.appAllFriendsNearby.talk.tools.constants.MAIN
 import com.appAllFriendsNearby.talk.tools.constants.REGISTRATION_FRAGMENT
 import com.appAllFriendsNearby.talk.tools.constants.USER_DATA_FRAGMENT
 import com.appAllFriendsNearby.talk.tools.constants.USER_DATA_FRAGMENT_REPLACE
@@ -52,13 +50,13 @@ class RegistrationActivity : AppCompatActivity() {
         }
 
         //Проверяем, зарегестрирован ли пользователь
-        if (sharedPreferences.getString(USER_REGISTRATION, "") == getString(R.string.statusUserRegistrationTrue)) {
+        if (sharedPreferences.getString(SIGN_IN, "") == getString(R.string.statusUserSignIn)) {
             /////////////////////Переходим в активити главного меню
             startActivity(Intent(this, MainMenuActivity::class.java))
             finish()
         }
         //Если пользователь не зарегестрирован, но подтвердил телефон
-        else if (sharedPreferences.getString(USER_CONFIRMATION, "") == getString(R.string.statusUserConfirmationTrue)) {
+        else if (sharedPreferences.getString(LOG_IN, "") == getString(R.string.statusUserLoginTrue)) {
             changeFragment(USER_DATA_FRAGMENT)
         }else {
             //////////////////////Если впервые тут

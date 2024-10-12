@@ -1,43 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
-    android:id="@+id/cardView"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<com.google.android.material.carousel.MaskableFrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/carousel_item_container"
     android:layout_width="150dp"
-    android:layout_height="wrap_content"
-    android:layout_gravity="center"
-    android:layout_marginTop="5dp"
-    android:layout_marginEnd="5dp"
-    android:layout_marginStart="3dp"
-    android:elevation="20dp"
-    app:cardCornerRadius="15dp"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent">
+    android:layout_height="match_parent"
+    android:layout_marginTop="8dp"
+    android:layout_marginBottom="8dp"
+    android:layout_marginStart="4dp"
+    android:layout_marginEnd="4dp"
+    android:foreground="?attr/selectableItemBackground"
+    app:shapeAppearance="?attr/shapeAppearanceCornerExtraLarge">
 
     <ImageView
         android:id="@+id/userPhoto"
         android:layout_width="match_parent"
-        android:layout_height="190dp"
+        android:layout_height="match_parent"
         android:layout_gravity="center"
         android:scaleType="centerCrop"
         android:visibility="invisible"
         app:srcCompat="@drawable/drawable_icon_insert_photo" />
 
-    <ProgressBar
+    <com.google.android.material.progressindicator.CircularProgressIndicator
         android:id="@+id/progressBar"
-        style="?android:attr/progressBarStyle"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_gravity="center" />
+        android:indeterminate="true"
+        android:layout_gravity="center"
+        app:indicatorColor="@color/statePressedIcon"
+        app:indicatorSize="50sp"
+        app:trackColor="@color/nameAppColor"
+        app:trackThickness="3dp" />
 
     <TextView
         android:id="@+id/userName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:layout_marginStart="5dp"
+        android:layout_gravity="bottom|start"
+        android:layout_marginStart="15dp"
         android:layout_marginBottom="5dp"
+        android:fontFamily="sans-serif"
         android:maxLines="1"
         android:maxEms="10"
         android:alpha="0.8"
@@ -46,7 +48,7 @@
         android:padding="1dp"
         android:text="@string/itemUserName"
         android:textColor="@color/black"
-        android:textSize="20sp" />
+        android:textSize="18sp" />
     <View
         android:id="@+id/connectDote"
         android:layout_width="10dp"
@@ -55,6 +57,9 @@
         android:background="@drawable/style_card_connection"
         android:layout_gravity="bottom|end"
         android:layout_marginBottom="15dp"
-        android:layout_marginEnd="5dp"/>
+        android:layout_marginEnd="10dp"/>
 
-</androidx.cardview.widget.CardView>
+
+
+</com.google.android.material.carousel.MaskableFrameLayout>
+

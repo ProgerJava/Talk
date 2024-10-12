@@ -14,4 +14,5 @@ const val MAIN = "MAIN"
 const val CODE_PICK_IMAGE = 102
 const val CROPPED_URI = "CROPPED_URI"
 const val COMPANION_ID = "COMPANION_ID"
+const val IMAGE_FROM_INTENT = "IMAGE_FROM_INTENT"
 

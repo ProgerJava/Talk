@@ -1,6 +1,7 @@
 package com.appAllFriendsNearby.talk.model
 
 
+import android.net.Uri
 import android.util.Log
 import com.appAllFriendsNearby.talk.dataBase.MESSAGE
 import com.appAllFriendsNearby.talk.dataBase.RECIPIENT
@@ -12,16 +13,19 @@ import com.appAllFriendsNearby.talk.dataBase.USER_DATA
 import com.appAllFriendsNearby.talk.dataBase.USER_DIALOGS
 import com.appAllFriendsNearby.talk.dataBase.USER_ID
 import com.appAllFriendsNearby.talk.dataBase.USER_NAME
-import com.appAllFriendsNearby.talk.dataBase.USER_PHONE
+import com.appAllFriendsNearby.talk.dataBase.USER_EMAIL
 import com.appAllFriendsNearby.talk.dataBase.USER_PHOTO
 import com.appAllFriendsNearby.talk.dataBase.dataClass.CardUserDataClass
 import com.appAllFriendsNearby.talk.dataBase.DATABASE_O
 import com.appAllFriendsNearby.talk.dataBase.KEY
+import com.appAllFriendsNearby.talk.dataBase.STORAGE_O
 import com.appAllFriendsNearby.talk.dataBase.USER_ID_O
+import com.appAllFriendsNearby.talk.dataBase.USER_NICK
 import com.appAllFriendsNearby.talk.tools.constants.COMPANION_ID
 import com.google.firebase.database.ServerValue
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
+import java.net.URL
 import javax.inject.Inject
 
 class DialogModel @Inject constructor() {
@@ -35,8 +39,9 @@ class DialogModel @Inject constructor() {
                 cardUserDataClass = CardUserDataClass(
                     idCurrentUser,
                     userData[USER_NAME] as String,
-                    userData[USER_PHONE] as String,
+                    userData[USER_EMAIL] as String,
                     userData[USER_PHOTO] as String,
+                    userData[USER_NICK] as String,
                     userData[USER_CONNECTION] as Boolean?
                 )
             }.addOnFailureListener {
@@ -71,5 +76,26 @@ class DialogModel @Inject constructor() {
             Log.println(Log.ERROR, "sendMessage", it.message.toString())
         }
     }
+    suspend fun sendUserMessageImageToStorage (urlUserPhoto: Uri, userIdCompanion: String): String = coroutineScope {
+        var listWithUrl = ""
+        val timestamp = ServerValue.TIMESTAMP
+        val referencePhotoCurrentUser = STORAGE_O.child("$USERS/$USER_ID_O/$USER_DIALOGS/$COMPANION_ID/$userIdCompanion/$timestamp")
+
+        referencePhotoCurrentUser.putFile(urlUserPhoto)
+            .addOnSuccessListener {///////////////Если картинка загрузилась в Storage, скачиваем ее URl
+                referencePhotoCurrentUser.downloadUrl.addOnCompleteListener {
+                    listWithUrl = it.result.toString()
+                }
+            }
+            .addOnFailureListener {
+                Log.println(Log.ERROR, "sendMessage", it.message.toString())
+            }
+
+        while (listWithUrl.isEmpty()) {
+            delay(100)
+        }
+        return@coroutineScope listWithUrl
+    }
+
 
 }

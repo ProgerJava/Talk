@@ -7,6 +7,7 @@ import com.appAllFriendsNearby.talk.tools.constants.COMPANION_ID
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 ///////////////////Записываем данные на нового пользователя в БД
@@ -15,7 +16,8 @@ suspend fun writeNewUserToDB(sharedPreferences: SharedPreferences) = coroutineSc
     val user = mapOf<Any, Any>(
         USER_NAME to sharedPreferences.getString(USER_NAME, "").toString(),
         USER_PHOTO to sharedPreferences.getString(USER_PHOTO, "").toString(),
-        USER_PHONE to sharedPreferences.getString(USER_PHONE, "").toString()
+        USER_EMAIL to sharedPreferences.getString(USER_EMAIL, "").toString(),
+        USER_NICK to sharedPreferences.getString(USER_NICK, "").toString()
     )
     DATABASE_O
         .child(USERS)
@@ -48,7 +50,8 @@ suspend fun setUserConnection (statusConnection: Boolean) = coroutineScope {
         }
 }
 /////////////////////Удаляем сообщения
-suspend fun removeSelectMessages (deletionList: List<UserMessagesWithCompanionDataClass>) = coroutineScope {
+suspend fun removeSelectMessages (deletionList: List<UserMessagesWithCompanionDataClass>) : Boolean = coroutineScope {
+    var flag = false
     val coroutineScope = CoroutineScope(Dispatchers.Main)
     var companionId = ""
     for (i in deletionList.indices) {
@@ -75,5 +78,39 @@ suspend fun removeSelectMessages (deletionList: List<UserMessagesWithCompanionDa
                     Log.println(Log.ERROR, "removeSelectMessages", it.message.toString())
                 }
         }
+        if (i == deletionList.size-1) {
+            flag = true
+        }
     }
+    while (!flag) {
+        delay(100)
+    }
+    return@coroutineScope flag
+}
+
+
+////////////////Если флаг false - ник уникален
+suspend fun checkExistsUserNick (nick: String): Boolean = coroutineScope {
+    var flag: Boolean? = null
+    DATABASE_O.child(USERS).child(USER_ID)
+        .get().addOnSuccessListener { it -> ///////Если нет имени
+            if (it.childrenCount.toInt() != 0) {
+                (it.value as HashMap<*, *>).forEach { (_, value) ->
+                    val result = (value as HashMap<*, *>)
+                    flag = if (result.containsKey(USER_NICK)) {
+                        val nickFromDb = result[USER_NICK] as String
+                        (nickFromDb == nick)
+                    }else {
+                        false
+                    }
+                }
+                println()
+            } else {
+                flag = false
+            }
+        }
+    while (flag == null) {
+        delay(100)
+    }
+    return@coroutineScope flag!!
 }

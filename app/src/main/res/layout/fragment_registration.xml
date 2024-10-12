@@ -10,7 +10,7 @@
     <ImageView
         android:id="@+id/mainBack"
         android:layout_width="match_parent"
-        android:layout_height="280dp"
+        android:layout_height="260dp"
         android:layout_marginTop="15dp"
         android:alpha="0.8"
         android:src="@drawable/drawable_main_back_talk"
@@ -28,106 +28,132 @@
         android:gravity="center"
         android:text="@string/app_name"
         android:textColor="@color/nameAppColor"
-        android:textSize="60sp"
+        android:textSize="50sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/mainBack" />
 
 
-    <LinearLayout
-        android:id="@+id/linearLayout2"
-        android:layout_width="wrap_content"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textInputLayoutEmail"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
-        android:gravity="top"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@+id/buttonNext"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="40dp"
+        app:boxStrokeWidth="2dp"
+        app:boxStrokeWidthFocused="3dp"
+        app:endIconMode="clear_text"
+        android:hint="@string/yourEmail"
+        app:cursorColor="@color/nameAppColor"
+        app:hintTextColor="@color/colorGrey"
+        android:textColorHint="@color/colorGrey"
+        app:placeholderTextColor="@color/nameAppColor"
+        app:boxStrokeColor="@color/nameAppColor"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appName">
+        app:layout_constraintTop_toBottomOf="@+id/appName"
+        app:startIconDrawable="@drawable/drawable_icon_email"
+        app:startIconTint="@color/nameAppColor">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/personEmail"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="top"
-            android:orientation="horizontal"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/appName">
-
-            <EditText
-                android:id="@+id/personCountryCode"
-                android:layout_width="40dp"
-                android:layout_height="45dp"
-                android:background="@drawable/style_button_edit"
-                android:enabled="false"
-                android:fontFamily="sans-serif"
-                android:gravity="center"
-                android:hint="@string/yourCountryCode"
-                android:inputType="phone"
-                android:padding="2dp"
-                android:textSize="22sp" />
-
-            <EditText
-                android:id="@+id/personPhone"
-                android:layout_width="250dp"
-                android:layout_height="45dp"
-                android:layout_marginStart="10dp"
-                android:background="@drawable/style_button_edit"
-                android:fontFamily="sans-serif"
-                android:gravity="center"
-                android:hint="@string/yourPhone"
-                android:inputType="phone"
-                android:padding="2dp"
-                android:textSize="22sp" />
-        </LinearLayout>
-
-        <EditText
-            android:id="@+id/personCode"
-            android:layout_width="300dp"
-            android:layout_height="45dp"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/style_button_edit"
             android:fontFamily="sans-serif"
-            android:gravity="center"
-            android:hint="@string/yourCode"
-            android:inputType="numberPassword"
-            android:textSize="22sp"
-            android:visibility="gone"
+            android:textSize="18sp"
+            android:gravity="start|center_vertical"
+            android:inputType="textEmailAddress" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textInputLayoutPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/yourPassword"
+        app:boxStrokeWidth="2dp"
+        app:boxStrokeWidthFocused="3dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginEnd="40dp"
+        app:cursorColor="@color/nameAppColor"
+        app:hintTextColor="@color/colorGrey"
+        android:textColorHint="@color/colorGrey"
+        app:placeholderTextColor="@color/nameAppColor"
+        app:boxStrokeColor="@color/nameAppColor"
+        app:endIconMode="password_toggle"
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayoutEmail"
+        app:startIconDrawable="@drawable/drawable_icon_password"
+        app:startIconTint="@color/nameAppColor"
+        app:endIconTint="@color/nameAppColor">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/personPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:fontFamily="sans-serif"
+            android:gravity="start|center_vertical"
+            android:inputType="textPassword"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
-    </LinearLayout>
-
+    </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
-        android:id="@+id/buttonNext"
+        android:id="@+id/alreadyRegistered"
         android:layout_width="wrap_content"
-        android:layout_height="45dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="30dp"
+        android:layout_height="wrap_content"
         android:fontFamily="sans-serif"
         android:gravity="center"
+        android:layout_marginTop="10dp"
         android:paddingStart="10dp"
         android:paddingEnd="10dp"
-        android:text="@string/getCode"
+        android:text="@string/alreadyRegistered"
         android:textColor="@color/nameAppColor"
-        android:textSize="22sp"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="@+id/textInputLayoutPassword"
+        app:layout_constraintStart_toStartOf="@+id/textInputLayoutPassword"
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayoutPassword"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:id="@+id/progressBar"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:indeterminate="true"
+        android:visibility="gone"
+        app:indicatorColor="@color/statePressedIcon"
+        app:indicatorSize="30sp"
+        app:layout_constraintBottom_toTopOf="@+id/buttonNext"
+        app:layout_constraintEnd_toEndOf="@+id/buttonNext"
+        app:layout_constraintStart_toStartOf="@+id/buttonNext"
+        app:layout_constraintTop_toBottomOf="@+id/alreadyRegistered"
+        app:trackColor="@color/nameAppColor"
+        app:trackThickness="6dp" />
+
+
+    <Button
+        android:id="@+id/buttonNext"
+        style="@style/Widget.Material3.Button.ElevatedButton.Icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif"
+        android:gravity="center"
+        android:text="@string/login"
+        android:textStyle="bold"
+        app:strokeColor="@color/nameAppColor"
+        app:strokeWidth="2dp"
+        android:backgroundTint="@color/colorStart"
+        android:textColor="@color/nameAppColor"
+        app:icon="@drawable/drawable_icon_registered"
+        app:iconTint="@color/nameAppColor"
+        android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <ProgressBar
-        android:id="@+id/progressBar"
-        style="?android:attr/progressBarStyle"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:visibility="gone"
-        android:indeterminateTint="@color/colorCenter"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appName" />
+        app:layout_constraintTop_toBottomOf="@+id/alreadyRegistered" />
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

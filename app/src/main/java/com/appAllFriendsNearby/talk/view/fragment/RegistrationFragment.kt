@@ -8,22 +8,20 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.annotation.RequiresApi
+import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import com.appAllFriendsNearby.talk.R
 import com.appAllFriendsNearby.talk.databinding.FragmentRegistrationBinding
 import com.appAllFriendsNearby.talk.di.MyApplication
 import com.appAllFriendsNearby.talk.model.RegistrationModel
-import com.appAllFriendsNearby.talk.tools.generalStaticFunction.showToast
 import com.appAllFriendsNearby.talk.view.activity.RegistrationActivity
 import com.appAllFriendsNearby.talk.viewModel.RegistrationViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class RegistrationFragment : Fragment() {
 
     private lateinit var binding: FragmentRegistrationBinding
+
     private lateinit var registrationActivity: RegistrationActivity
     @Inject
     lateinit var viewModel: RegistrationViewModel
@@ -33,6 +31,7 @@ class RegistrationFragment : Fragment() {
     lateinit var sharedPreferences: SharedPreferences
     @Inject
     lateinit var sharedPreferencesEditor: SharedPreferences.Editor
+    private var alreadyRegisteredFlag = false
 
 
     override fun onCreateView(
@@ -46,29 +45,28 @@ class RegistrationFragment : Fragment() {
 
         (requireActivity().application as MyApplication).appComponent.inject(this)
 
-        /////////////////////Слушатель отправки кода на телефон пользователя
-        viewModel.sendMessageFlag.observe(registrationActivity) {
-            if (it) {
-                binding.progressBar.visibility = View.GONE
-                binding.personPhone.isEnabled = false
-                binding.personCode.visibility = View.VISIBLE /////////////код отправлен, подключаем поле "код" для ввода, меняем название кнопки
-                binding.buttonNext.text = registrationActivity.getString(R.string.next)
+        binding.buttonNext.setOnClickListener {
+            verification()
+        }
+        viewModel.flagUserConnect.observe(registrationActivity) {
+            binding.progressBar.visibility = View.GONE
+        }
+        binding.alreadyRegistered.setOnClickListener {
+            alreadyRegisteredFlag = !alreadyRegisteredFlag
+             if (alreadyRegisteredFlag) {
+                 binding.alreadyRegistered.text = getString(R.string.login)
+                 binding.buttonNext.text = getString(R.string.signIn)
+            }else {
+                 binding.alreadyRegistered.text = getString(R.string.alreadyRegistered)
+                 binding.buttonNext.text = getString(R.string.login)
             }
         }
-
-        binding.buttonNext.setOnClickListener {
-            CoroutineScope(Dispatchers.Main).launch {
-                ////////////Если кнопка имеет название "получить код"
-                if (binding.buttonNext.text == registrationActivity.getString(R.string.getCode)) {
-                    verification()
-                } else {
-                    if (binding.personCode.text.isNotEmpty()) {
-                        viewModel.signInWithPhoneAuthCredential(binding.personCode.text.toString(), binding.personPhone.text.toString())
-                    } else {
-                        showToast(registrationActivity, R.string.firstEnterYourCode)
-                    }
-                }
-            }
+        ////////////////////Обработка полей с ошибками
+        binding.personEmail.doOnTextChanged { _, _, _, _ ->
+            binding.textInputLayoutEmail.error = null
+        }
+        binding.personPassword.doOnTextChanged { _, _, _, _ ->
+            binding.textInputLayoutPassword.error = null
         }
 
 
@@ -76,12 +74,17 @@ class RegistrationFragment : Fragment() {
     }
     ////////////////////Проверка корректности имени и номера
     private fun verification() {
-        if (binding.personPhone.text.length != 10) {
-            showToast(registrationActivity, R.string.firstEnterYourPhone)
+        if (binding.personEmail.text!!.isEmpty()) {
+            binding.textInputLayoutEmail.error = getString(R.string.firstEnterYourEmail)
+        }
+        else if (binding.personPassword.text!!.isEmpty()) {
+            binding.textInputLayoutPassword.error = getString(R.string.firstEnterYourPassword)
         } else {
             binding.progressBar.visibility = View.VISIBLE
-            CoroutineScope(Dispatchers.Main).launch {
-                viewModel.setPhoneNumber("+7${binding.personPhone.text.trim()}", registrationActivity)
+            if (binding.buttonNext.text == getString(R.string.login)) {
+                viewModel.login(binding.personEmail.text.toString(), binding.personPassword.text.toString(), registrationActivity)
+            }else {
+                viewModel.signIn(binding.personEmail.text.toString(), binding.personPassword.text.toString(), registrationActivity)
             }
         }
     }

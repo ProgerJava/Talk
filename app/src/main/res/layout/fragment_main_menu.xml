@@ -7,11 +7,12 @@
     android:background="@color/backGroundMain"
     tools:context=".view.fragment.MainMenuFragment">
 
-    <SearchView
+    <androidx.appcompat.widget.SearchView
         android:id="@+id/searcher"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="3dp"
+        app:searchIcon="@drawable/drawable_icon_search"
         app:queryHint="@string/findSearchViewTextHint"
         android:queryBackground="@android:color/transparent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -29,12 +30,16 @@
         app:layout_constraintTop_toTopOf="@+id/searcher"
         app:layout_constraintBottom_toBottomOf="@+id/searcher">
 
-        <ProgressBar
+        <com.google.android.material.progressindicator.CircularProgressIndicator
             android:id="@+id/progressBar"
-            style="?android:attr/progressBarStyle"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:indeterminate="true"
             android:layout_gravity="center"
-            android:layout_width="30dp"
-            android:layout_height="30dp" />
+            app:indicatorColor="@color/statePressedIcon"
+            app:indicatorSize="30sp"
+            app:trackColor="@color/nameAppColor"
+            app:trackThickness="3dp" />
 
         <ImageView
             android:id="@+id/currentUserPhoto"
@@ -54,7 +59,7 @@
         android:layout_height="1dp"
         android:layout_marginStart="5dp"
         android:layout_marginEnd="5dp"
-        android:background="@android:color/darker_gray"
+        android:background="@color/colorGrey"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/searcher" />
@@ -64,15 +69,33 @@
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:layout_marginTop="10dp"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         android:orientation="horizontal"
+        android:background="@color/backGroundDarkerMain"
+        android:clipChildren="false"
+        android:clipToPadding="false"
         tools:itemCount="3"
         android:elevation="20dp"
-        android:background="@color/backGroundDarkerMain"
         tools:listitem="@layout/item_recycler_view_user_card"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/view"/>
+
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:id="@+id/progressBarRecyclerViewAllUsers"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_gravity="center"
+        android:indeterminate="true"
+        app:indicatorColor="@color/statePressedIcon"
+        app:indicatorSize="50sp"
+        android:elevation="22dp"
+        app:layout_constraintBottom_toBottomOf="@id/recyclerViewAllUsers"
+        app:layout_constraintTop_toTopOf="@+id/recyclerViewAllUsers"
+        app:layout_constraintEnd_toEndOf="@+id/recyclerViewAllUsers"
+        app:layout_constraintStart_toStartOf="@+id/recyclerViewAllUsers"
+        app:trackColor="@color/nameAppColor"
+        app:trackThickness="3dp" />
+
 
     <View
         android:id="@+id/view1"
@@ -81,7 +104,7 @@
         android:layout_marginStart="5dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="5dp"
-        android:background="@android:color/darker_gray"
+        android:background="@color/colorGrey"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/recyclerViewAllUsers" />
@@ -91,11 +114,25 @@
         android:layout_width="0dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         android:layout_height="0dp"
+        android:visibility="gone"
         android:layout_marginBottom="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         tools:listitem="@layout/item_recycler_view_user_chats"
+        app:layout_constraintTop_toBottomOf="@+id/view1" />
+
+    <TextView
+        android:id="@+id/startConversation"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:gravity="center"
+        android:textColor="@color/colorGrey"
+        android:text="@string/startConversation"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/view1" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton

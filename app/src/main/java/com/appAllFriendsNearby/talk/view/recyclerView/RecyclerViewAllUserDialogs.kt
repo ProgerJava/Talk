@@ -7,6 +7,7 @@ import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.URLUtil
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -55,13 +56,23 @@ class RecyclerViewAllUserDialogs(
         CoroutineScope(Dispatchers.Main).launch {
             setUserPhoto(dialog.userPhoto, holder.progressBar, holder.userPhoto)
         }
-        holder.userName.text = dialog.userName
+        holder.userName.text = if (dialog.userName.length > 9) {
+            dialog.userName.substring(0, 9) + "…"
+        }else {
+            dialog.userName
+        }
+        val message = if (URLUtil.isValidUrl(dialog.userLastMessage)) {
+            "фотография"
+        }else{
+            dialog.userLastMessage
+        }
+
         if (dialog.userSender == USER_ID_O) {
-            val spannableString = SpannableString("You: ${dialog.userLastMessage}")
-            spannableString.setSpan(ForegroundColorSpan(Color.BLACK), 0, "You:".length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            val spannableString = SpannableString("You: $message")
+            spannableString.setSpan(ForegroundColorSpan(holder.lastMessage.context.getColor(R.color.black)), 0, "You:".length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             holder.lastMessage.text = spannableString
         }else {
-            holder.lastMessage.text = dialog.userLastMessage
+            holder.lastMessage.text = message
         }
         holder.constraint.setOnClickListener {
             onClickRecyclerViewItemUsers.itemClick(dialog.userCompanion)

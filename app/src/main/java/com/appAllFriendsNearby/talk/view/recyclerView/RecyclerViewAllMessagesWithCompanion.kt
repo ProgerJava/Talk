@@ -1,37 +1,37 @@
 package com.appAllFriendsNearby.talk.view.recyclerView
 
-import android.annotation.SuppressLint
-import android.util.Log
+
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.URLUtil
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.appAllFriendsNearby.talk.R
 import com.appAllFriendsNearby.talk.dataBase.dataClass.UserMessagesWithCompanionDataClass
 import com.appAllFriendsNearby.talk.dataBase.USER_ID_O
-import com.appAllFriendsNearby.talk.dataBase.removeSelectMessages
-import com.appAllFriendsNearby.talk.databinding.FragmentDialogBinding
 import com.appAllFriendsNearby.talk.tools.generalStaticFunction.getDateFormat
+import com.appAllFriendsNearby.talk.tools.generalStaticFunction.setUserPhoto
+import com.appAllFriendsNearby.talk.view.OnClickRemoveItem
+import com.appAllFriendsNearby.talk.view.OnLongTouchRecyclerViewItemDelete
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.Date
+
 
 class RecyclerViewAllMessagesWithCompanion(
     private val list: List<UserMessagesWithCompanionDataClass>,
-    binding: FragmentDialogBinding
+    private val onLongTouchRecyclerViewItemDelete: OnLongTouchRecyclerViewItemDelete,
+    private val onClickRemoveItem: OnClickRemoveItem
 ) :
     RecyclerView.Adapter<RecyclerViewAllMessagesWithCompanion.MyViewHolder>() {
 
-    private val listWithRemovedMessages = mutableListOf<UserMessagesWithCompanionDataClass>()
-    private val constrainSendMessage = binding.constraintSendMessage
-    private val constrainDeleteMessage = binding.constraintDeleteMessage
     private var flagRemove = false
-    private val delete = binding.delete
 
 
     class MyViewHolder(itemView: View): ViewHolder(itemView) {
@@ -41,6 +41,16 @@ class RecyclerViewAllMessagesWithCompanion(
         val messageCurrentUser: TextView = itemView.findViewById(R.id.messageCurrentUser)
         val selectCurrentUser: ImageView = itemView.findViewById(R.id.selectCurrentUser)
         val selectCompanion: ImageView = itemView.findViewById(R.id.selectCompanion)
+        val constraintCompanion: ConstraintLayout = itemView.findViewById(R.id.constraintCompanion)
+        val constraintCurrent: ConstraintLayout = itemView.findViewById(R.id.constraintCurrent)
+        val cardViewImageCompanionUser: CardView = itemView.findViewById(R.id.cardViewImageCompanionUser)
+        val cardViewImageCurrentUser: CardView = itemView.findViewById(R.id.cardViewImageCurrentUser)
+        val imageCompanionUser: ImageView = itemView.findViewById(R.id.imageCompanionUser)
+        val imageCurrentUser: ImageView = itemView.findViewById(R.id.imageCurrentUser)
+        val selectCurrentUserImage: ImageView = itemView.findViewById(R.id.selectCurrentUserImage)
+        val selectCompanionImage: ImageView = itemView.findViewById(R.id.selectCompanionImage)
+        val progressBarImageCompanion: ProgressBar = itemView.findViewById(R.id.progressBarImageCompanion)
+        val progressBarImageCurrent: ProgressBar = itemView.findViewById(R.id.progressBarImageCurrent)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -53,51 +63,96 @@ class RecyclerViewAllMessagesWithCompanion(
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val userMessagesWithCompanion = list[position]
         if (userMessagesWithCompanion.sender == USER_ID_O) {////////////Если сообщение от нас
-            setMessage(holder.dateMessageCompanion, holder.messageCompanion, holder.dateMessageCurrentUser, holder.messageCurrentUser, userMessagesWithCompanion.timestamp, userMessagesWithCompanion.message, holder.selectCurrentUser, userMessagesWithCompanion)
-        }
-        else {//////////////////Если от собеседника
-            setMessage(holder.dateMessageCurrentUser, holder.messageCurrentUser, holder.dateMessageCompanion, holder.messageCompanion, userMessagesWithCompanion.timestamp, userMessagesWithCompanion.message, holder.selectCompanion, userMessagesWithCompanion)
-        }
-        //////////////Удаляем сообщения
-        delete.setOnClickListener {
-            CoroutineScope(Dispatchers.Main).launch {
-                removeSelectMessages(listWithRemovedMessages)
-            }
+            setMessage(
+                holder.constraintCurrent,
+                holder.constraintCompanion,
+                holder.dateMessageCurrentUser,
+                holder.messageCurrentUser,
+                userMessagesWithCompanion.timestamp,
+                userMessagesWithCompanion.message,
+                holder.selectCurrentUser,
+                userMessagesWithCompanion,
+                holder.cardViewImageCurrentUser,
+                holder.imageCurrentUser,
+                holder.selectCurrentUserImage,
+                holder.progressBarImageCurrent
+            )
+        } else {//////////////////Если от собеседника
+            setMessage(
+                holder.constraintCompanion,
+                holder.constraintCurrent,
+                holder.dateMessageCompanion,
+                holder.messageCompanion,
+                userMessagesWithCompanion.timestamp,
+                userMessagesWithCompanion.message,
+                holder.selectCompanion,
+                userMessagesWithCompanion,
+                holder.cardViewImageCompanionUser,
+                holder.imageCompanionUser,
+                holder.selectCompanionImage,
+                holder.progressBarImageCompanion
+            )
         }
     }
     private fun setMessage (
-        goneDataMessage: TextView,
-        goneMessage: TextView,
+        constraintVisible: ConstraintLayout,
+        constraintGone: ConstraintLayout,
         dateMessage: TextView,
         messageView: TextView,
         timeStamp: Long,
         message: String,
         selectView: ImageView,
-        userMessagesWithCompanion: UserMessagesWithCompanionDataClass
+        userMessagesWithCompanion: UserMessagesWithCompanionDataClass,
+        cardView: CardView,
+        image: ImageView,
+        selectViewImage: ImageView,
+        imageProgressBar: ProgressBar
     ) {
-        goneDataMessage.visibility = View.GONE
-        goneMessage.visibility = View.GONE
+        constraintVisible.visibility = View.VISIBLE
+        constraintGone.visibility = View.GONE
         dateMessage.text = getDateFormat(timeStamp)
-        messageView.text = message
-        messageView.setOnLongClickListener {
-            flagRemove = true
-            selectView.visibility = View.VISIBLE
-            listWithRemovedMessages.add(userMessagesWithCompanion)
-            if(constrainSendMessage.visibility == View.VISIBLE) {
-                constrainSendMessage.visibility = View.GONE
-                constrainDeleteMessage.visibility = View.VISIBLE
+        if (URLUtil.isValidUrl(message)) {
+            messageView.visibility = View.GONE
+            cardView.visibility = View.VISIBLE
+            CoroutineScope(Dispatchers.Main).launch {
+                setUserPhoto(message, imageProgressBar, image)
             }
-            true
+        }else {
+            messageView.text = message
+        }
+        cardView.setOnLongClickListener {
+            onLongClick(selectViewImage, userMessagesWithCompanion)
+        }
+        messageView.setOnLongClickListener {
+            onLongClick(selectView, userMessagesWithCompanion)
         }
         messageView.setOnClickListener {
-            if (flagRemove && selectView.visibility == View.VISIBLE) {
-                selectView.visibility = View.GONE
-                listWithRemovedMessages.remove(userMessagesWithCompanion)
-            }else if (flagRemove && selectView.visibility == View.GONE) {
-                selectView.visibility = View.VISIBLE
-                listWithRemovedMessages.add(userMessagesWithCompanion)
-            }
+            onClick(selectView, userMessagesWithCompanion)
+        }
+        cardView.setOnClickListener {
+            onClick(selectViewImage, userMessagesWithCompanion)
         }
     }
-
+    private fun onClick(
+        selectView: ImageView,
+        userMessagesWithCompanion: UserMessagesWithCompanionDataClass
+    ) {
+        if (flagRemove && selectView.visibility == View.VISIBLE) {
+            selectView.visibility = View.GONE
+            onClickRemoveItem.removeItem(userMessagesWithCompanion)
+        }else if (flagRemove && selectView.visibility == View.GONE) {
+            selectView.visibility = View.VISIBLE
+            onClickRemoveItem.addItem(userMessagesWithCompanion)
+        }
+    }
+    private fun onLongClick(
+        selectView: ImageView,
+        userMessagesWithCompanion: UserMessagesWithCompanionDataClass
+    ): Boolean {
+        flagRemove = true
+        onLongTouchRecyclerViewItemDelete.longItemClick(true)
+        selectView.visibility = View.VISIBLE
+        onClickRemoveItem.addItem(userMessagesWithCompanion)
+        return true
+    }
 }

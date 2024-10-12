@@ -1,5 +1,6 @@
 package com.appAllFriendsNearby.talk.view.fragment
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Build
@@ -23,6 +24,9 @@ import com.appAllFriendsNearby.talk.view.activity.RegistrationActivity
 import com.appAllFriendsNearby.talk.view.recyclerView.RecyclerViewAllUserDialogs
 import com.appAllFriendsNearby.talk.view.recyclerView.RecyclerViewListAllUsers
 import com.appAllFriendsNearby.talk.viewModel.MainMenuViewModel
+import com.google.android.material.carousel.CarouselLayoutManager
+import com.google.android.material.carousel.CarouselSnapHelper
+import com.google.android.material.carousel.UncontainedCarouselStrategy
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -38,6 +42,7 @@ class MainMenuFragment : Fragment(), OnClickRecyclerViewItemUsersOrDialogs {
     private lateinit var mainMenuActivity: MainMenuActivity
 
 
+    @SuppressLint("RestrictedApi")
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -55,10 +60,14 @@ class MainMenuFragment : Fragment(), OnClickRecyclerViewItemUsersOrDialogs {
         //////////////////Получаем все диалоги пользователя
         mainMenuViewModel.getAllUserDialogs()
 
+        binding.recyclerViewAllUsers.layoutManager = CarouselLayoutManager(UncontainedCarouselStrategy())
+        val snapHelper = CarouselSnapHelper()
+        snapHelper.attachToRecyclerView(binding.recyclerViewAllUsers)
 
         /////////////////Слушатель все пользователи
         mainMenuViewModel.listAllUsers.observe(requireActivity()) {
             if (it.size != 0) {
+                binding.progressBarRecyclerViewAllUsers.visibility = View.GONE
                 binding.recyclerViewAllUsers.adapter = RecyclerViewListAllUsers(it, this)
             }
         }
@@ -75,6 +84,8 @@ class MainMenuFragment : Fragment(), OnClickRecyclerViewItemUsersOrDialogs {
         ///////////////Слушатель все диалоги
         mainMenuViewModel.userDialogs.observe(requireActivity()) {
             if (it.size != 0) {
+                binding.allUserDialogs.visibility = View.VISIBLE
+                binding.startConversation.visibility = View.GONE
                 binding.allUserDialogs.adapter = RecyclerViewAllUserDialogs(it, this)
             }
         }

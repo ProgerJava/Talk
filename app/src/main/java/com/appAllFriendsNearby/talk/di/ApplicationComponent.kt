@@ -2,12 +2,12 @@ package com.appAllFriendsNearby.talk.di
 
 
 import android.content.Context
+import com.appAllFriendsNearby.talk.view.activity.MainMenuActivity
 import com.appAllFriendsNearby.talk.view.activity.RegistrationActivity
 import com.appAllFriendsNearby.talk.view.fragment.DialogFragment
 import com.appAllFriendsNearby.talk.view.fragment.MainMenuFragment
 import com.appAllFriendsNearby.talk.view.fragment.RegistrationFragment
 import com.appAllFriendsNearby.talk.view.fragment.UserDataFragment
-import com.appAllFriendsNearby.talk.viewModel.MainMenuViewModel
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module

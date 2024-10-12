@@ -1,6 +1,7 @@
 package com.appAllFriendsNearby.talk.viewModel
 
 import android.content.SharedPreferences
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -24,6 +25,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -49,6 +51,12 @@ class DialogViewModel @Inject constructor(
             dialogModel.sendMessage(message, companionUserId)
         }
     }
+    fun sendImageToStorageAndDB (urlUserPhoto: Uri) {
+        scope.launch {
+            val url = async{dialogModel.sendUserMessageImageToStorage(urlUserPhoto, companionUserId)}.await()
+            dialogModel.sendMessage(url, companionUserId)
+        }
+    }
     //////////////////Слушатель изменений в БД
     fun onDataChangeMessage() {
         scope.launch {
@@ -70,6 +78,7 @@ class DialogViewModel @Inject constructor(
                         }
                         val sorted = listWithUserMessages.sortedBy{it.timestamp}
                         messages.value = sorted
+                        Log.println(Log.ERROR, "recyclerViewCheck", "update")
                     }
                 }
                 override fun onCancelled(databaseError: DatabaseError) {

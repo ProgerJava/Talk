@@ -6,11 +6,12 @@ import com.appAllFriendsNearby.talk.dataBase.USER_CONNECTION
 import com.appAllFriendsNearby.talk.dataBase.USER_DATA
 import com.appAllFriendsNearby.talk.dataBase.USER_ID
 import com.appAllFriendsNearby.talk.dataBase.USER_NAME
-import com.appAllFriendsNearby.talk.dataBase.USER_PHONE
+import com.appAllFriendsNearby.talk.dataBase.USER_EMAIL
 import com.appAllFriendsNearby.talk.dataBase.USER_PHOTO
 import com.appAllFriendsNearby.talk.dataBase.dataClass.CardUserDataClass
 import com.appAllFriendsNearby.talk.dataBase.DATABASE_O
 import com.appAllFriendsNearby.talk.dataBase.USER_ID_O
+import com.appAllFriendsNearby.talk.dataBase.USER_NICK
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import javax.inject.Inject
@@ -35,8 +36,9 @@ class MainMenuModel @Inject constructor() {
                             CardUserDataClass(
                                 userIdKey as String,
                                 userData[USER_NAME] as String,
-                                userData[USER_PHONE] as String,
+                                userData[USER_EMAIL] as String,
                                 userData[USER_PHOTO] as String,
+                                userData[USER_NICK] as String,
                                 userData[USER_CONNECTION] as Boolean?
                             )
                         )
@@ -60,8 +62,9 @@ class MainMenuModel @Inject constructor() {
                 cardUserDataClass = CardUserDataClass(
                     userId,
                     userData[USER_NAME] as String,
-                    userData[USER_PHONE] as String,
+                    userData[USER_EMAIL] as String,
                     userData[USER_PHOTO] as String,
+                    userData[USER_NICK] as String,
                     userData[USER_CONNECTION] as Boolean?
                 )
             }.addOnFailureListener {

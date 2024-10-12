@@ -1,28 +1,24 @@
 package com.appAllFriendsNearby.talk.view.recyclerView
 
 import android.annotation.SuppressLint
-import android.content.SharedPreferences
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.appAllFriendsNearby.talk.R
 import com.appAllFriendsNearby.talk.dataBase.dataClass.CardUserDataClass
-import com.appAllFriendsNearby.talk.tools.constants.COMPANION_ID
-import com.appAllFriendsNearby.talk.tools.constants.DIALOG_FRAGMENT
 import com.appAllFriendsNearby.talk.tools.generalStaticFunction.showToast
 import com.appAllFriendsNearby.talk.view.OnClickRecyclerViewItemUsersOrDialogs
-import com.appAllFriendsNearby.talk.view.activity.MainMenuActivity
+import com.google.android.material.animation.AnimationUtils.lerp
+import com.google.android.material.carousel.MaskableFrameLayout
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 class RecyclerViewListAllUsers(
@@ -36,7 +32,6 @@ class RecyclerViewListAllUsers(
         val userPhoto: ImageView = itemView.findViewById(R.id.userPhoto)
         val userName: TextView = itemView.findViewById(R.id.userName)
         val connect: View = itemView.findViewById(R.id.connectDote)
-        val cardView: CardView = itemView.findViewById(R.id.cardView)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -66,8 +61,13 @@ class RecyclerViewListAllUsers(
         }else {
             holder.connect.background = holder.connect.context.getDrawable(R.drawable.style_card_disconnection)
         }
-        holder.cardView.setOnClickListener {
+        holder.userPhoto.setOnClickListener {
             onClickRecyclerViewItemUsersOrDialogs.itemClick(userData.userId)
+        }
+        (holder.itemView as MaskableFrameLayout).setOnMaskChangedListener {
+                maskRect ->
+            holder.userName.translationX = maskRect.left
+            holder.userName.alpha = lerp(1F, 0F, 0F, 80F, maskRect.left)
         }
     }
     private fun setUserPhoto(

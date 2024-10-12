@@ -1,34 +1,31 @@
 package com.appAllFriendsNearby.talk.viewModel
 
-import android.app.Application
-import android.content.SharedPreferences
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.appAllFriendsNearby.talk.dataBase.USER_ID_O
 import com.appAllFriendsNearby.talk.model.RegistrationModel
 import com.appAllFriendsNearby.talk.view.activity.RegistrationActivity
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
 class RegistrationViewModel @Inject constructor(private val registrationModel: RegistrationModel) : ViewModel() {
 
-    ///////////////////////////Observe liveData. Слушатель отправки сообщений
-    val sendMessageFlag: MutableLiveData<Boolean> = MutableLiveData<Boolean>()
+    val flagUserConnect = MutableLiveData<Boolean>()
 
-
-    suspend fun setPhoneNumber(number: String, registrationActivity: RegistrationActivity) = coroutineScope {
-        registrationModel.registrationActivity = registrationActivity
-        async {registrationModel.setPhoneNumber(number)}.await()
-        while (registrationModel.callBackSendMessage == null) {
-            delay(100)
+    fun login(email: String, password: String, registrationActivity: RegistrationActivity) {
+        CoroutineScope(Dispatchers.Main).launch {
+            flagUserConnect.value = async {registrationModel.createUserWithEmailAndPassWord(email, password, registrationActivity)}.await()
         }
-        if (registrationModel.callBackSendMessage == 1) sendMessageFlag.value = true
     }
-    suspend fun signInWithPhoneAuthCredential (personCode: String, personPhone: String) {
-        registrationModel.signInWithPhoneAuthCredential(personCode, personPhone)
+    fun signIn(email: String, password: String, registrationActivity: RegistrationActivity) {
+        CoroutineScope(Dispatchers.Main).launch {
+            flagUserConnect.value = async {registrationModel.signInWithEmailAndPassword(email, password, registrationActivity)}.await()
+        }
     }
 
 }

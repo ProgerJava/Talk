@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/mainConstraint"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -29,12 +30,12 @@
             android:id="@+id/userName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="3dp"
-            android:textStyle="bold"
             android:layout_gravity="center"
+            android:layout_marginStart="3dp"
             android:text=""
             android:textColor="@color/nameAppColor"
-            android:textSize="20sp" />
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
         <androidx.cardview.widget.CardView
             android:layout_width="40dp"
@@ -43,12 +44,16 @@
             android:layout_gravity="center_vertical|end"
             android:layout_marginEnd="5dp">
 
-            <ProgressBar
+            <com.google.android.material.progressindicator.CircularProgressIndicator
                 android:id="@+id/progressBar"
-                style="?android:attr/progressBarStyle"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:indeterminate="true"
                 android:layout_gravity="center"
-                android:layout_width="30dp"
-                android:layout_height="30dp" />
+                app:indicatorColor="@color/statePressedIcon"
+                app:indicatorSize="30sp"
+                app:trackColor="@color/nameAppColor"
+                app:trackThickness="3dp" />
 
             <ImageView
                 android:id="@+id/currentUserPhoto"
@@ -69,7 +74,7 @@
         android:layout_height="1dp"
         android:layout_marginStart="5dp"
         android:layout_marginEnd="5dp"
-        android:background="@android:color/darker_gray"
+        android:background="@color/colorGrey"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cardView" />
@@ -81,10 +86,23 @@
         android:layout_marginStart="5dp"
         android:layout_marginBottom="3dp"
         android:layout_marginEnd="5dp"
-        android:background="@android:color/darker_gray"
+        android:background="@color/colorGrey"
         app:layout_constraintBottom_toTopOf="@+id/messageCardView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewMessages"
+        android:layout_width="match_parent"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:layout_height="0dp"
+        tools:listitem="@layout/item_recycler_view_dialog"
+        app:layout_constraintBottom_toTopOf="@+id/view1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/view" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/messageCardView"
@@ -114,20 +132,20 @@
                 android:ems="10"
                 android:hint="@string/messageHint"
                 android:inputType="text"
-                app:layout_constraintEnd_toStartOf="@+id/send"
+                app:layout_constraintEnd_toStartOf="@+id/sendOrAttach"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
 
             <ImageView
-                android:id="@+id/send"
+                android:id="@+id/sendOrAttach"
                 android:layout_width="30dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:layout_marginTop="1dp"
                 android:layout_marginBottom="1dp"
                 android:layout_marginEnd="5dp"
-                android:src="@drawable/style_button_send"
+                android:src="@drawable/style_button_attach_file"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
@@ -169,14 +187,34 @@
 
     </androidx.cardview.widget.CardView>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewMessages"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        tools:listitem="@layout/item_recycler_view_dialog"
-        app:layout_constraintBottom_toTopOf="@+id/view1"
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardViewIntentImage"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:visibility="gone"
+        app:strokeWidth="3dp"
+        app:strokeColor="@color/colorGrey"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cardView" />
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="5dp"
+        app:layout_constraintBottom_toTopOf="@+id/messageCardView">
+
+        <ImageView
+            android:id="@+id/intentImage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/drawable_icon_insert_photo"
+            />
+        <ImageView
+            android:id="@+id/removeIntentImage"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="end"
+            android:layout_marginEnd="5dp"
+            android:layout_marginTop="5dp"
+            android:src="@drawable/style_button_close" />
+
+    </com.google.android.material.card.MaterialCardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
