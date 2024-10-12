@@ -1,6 +1,7 @@
 <div>
   <img src="https://github.com/user-attachments/assets/fc8f0b6b-b9fa-42a8-8f1a-bfa7a91e7d68" width="400" height="720"/>&nbsp;
-  <img src="https://github.com/user-attachments/assets/2bc80c32-091f-40da-b178-179be39753e3" width="400" height="720"/>&nbsp;
+  <img src="https://github.com/user-attachments/assets/15a5e06f-cf30-4ec0-920d-5bbff26a27fe" width="400" height="720"/>&nbsp;
+  <img src="https://github.com/user-attachments/assets/9e461641-6739-4bbb-b11e-97de3dd98475" width="400" height="720"/>&nbsp;
 </div>
 
 
@@ -26,3 +27,4 @@ Chat application for communication between friends😛🙉
 <img src="https://github.com/devicons/devicon/blob/master/icons/git/git-original-wordmark.svg" title="Git" alt="Git" width="40" height="40"/>&nbsp;
 </div>
 <li>Dagger2</li>
+<li>Picasso</li>
